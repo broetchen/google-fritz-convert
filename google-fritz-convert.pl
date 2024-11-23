@@ -7,7 +7,7 @@ use Data::Dumper;
 use utf8;
 my %phonebook = ();
 my @phonentries = ();
-
+my $epoc = time();
 my $file = $ARGV[0] or die "Need to get CSV file on the command line\n";
 my $csv  = Text::CSV->new(
     {
@@ -36,6 +36,7 @@ while ( $fields = $csv->getline($data) ) {
       foreach my $pnumber (@phnumbers){
           if ($pnumber =~ m/\d{3,}/){
             $pnumber =~ s/\s//g;
+            $pnumber =~ s/\-//g;
             # print "@$fields[0] @$fields[2] $pnumber\n";
             $phonebook{"@$fields[0] @$fields[2]"} = $phonebook{"@$fields[0] @$fields[2]"} . " $pnumber"
         }
@@ -85,7 +86,7 @@ foreach my $contact_key (keys %phonebook){
   $writer->startTag('features', 'doorphone' => "0");
   $writer->endTag('features');
   $writer->startTag('mod_time');
-  $writer->characters('1618145556');
+  $writer->characters($epoc);
   $writer->endTag('mod_time');
   $writer->startTag('uniqueid');
   $writer->characters($i);
